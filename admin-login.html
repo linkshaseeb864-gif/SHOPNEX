@@ -1,0 +1,16 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SHOPNEX Admin Login</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>*{box-sizing:border-box}body{margin:0;min-height:100vh;background:#f6f3ed;display:grid;place-items:center;font-family:"DM Sans",sans-serif;color:#171717}.box{width:min(420px,92%);background:#fff;border:1px solid #e7e1d7;border-radius:18px;padding:32px;box-shadow:0 15px 45px #00000012}.logo{font:700 31px "Playfair Display";text-align:center;margin-bottom:8px}.logo span{color:#c4a15c}.muted{text-align:center;color:#777;font-size:13px;margin-bottom:24px}label{display:block;font-size:12px;font-weight:700;margin:12px 0 6px}input{width:100%;padding:13px;border:1px solid #ddd;border-radius:9px;font:inherit}button{width:100%;margin-top:18px;padding:13px;border:0;border-radius:9px;background:#171717;color:#fff;font-weight:700;font-size:14px;cursor:pointer}.error{color:#b33;text-align:center;font-size:12px;margin-top:12px;min-height:16px}.back{text-align:center;margin-top:18px;font-size:12px}.back a{color:#555}</style></head>
+<body><div class="box"><div class="logo">SHOP<span>NEX</span></div><div class="muted">Private admin login</div>
+<label>Username</label><input id="u" autocomplete="username" placeholder="Admin username">
+<label>Password</label><input id="p" type="password" autocomplete="current-password" placeholder="Admin password">
+<button onclick="login()">Login to Admin</button><div id="e" class="error"></div><div class="back"><a href="index.html">← Back to SHOPNEX store</a></div></div>
+<script>
+function login(){
+ const u=document.getElementById("u").value.trim(),p=document.getElementById("p").value;
+ if(u==="hsb@42732"&&p==="hsb@6749"){sessionStorage.setItem("shopnexAdmin","1");location.href="admin.html"}
+ else document.getElementById("e").textContent="Username or password is incorrect.";
+}
+document.addEventListener("keydown",e=>{if(e.key==="Enter")login()});
+</script></body></html>

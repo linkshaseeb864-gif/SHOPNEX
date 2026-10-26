@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SHOPNEX Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f7f5f1;color:#171717;font-family:"DM Sans",sans-serif}
+button,input,select,textarea{font:inherit}.layout{display:grid;grid-template-columns:235px 1fr;min-height:100vh}
+.side{background:#151515;color:#fff;padding:22px 14px;position:sticky;top:0;height:100vh}.brand{font:700 25px "Playfair Display";padding:8px 12px 28px}.brand span{color:#d3b36a}
+.nav button{width:100%;border:0;background:transparent;color:#bbb;text-align:left;padding:13px 14px;border-radius:10px;margin:2px 0;font:600 14px "DM Sans";cursor:pointer}.nav button.active,.nav button:hover{background:#2a2a2a;color:#fff}
+.main{padding:24px;max-width:1400px;width:100%;margin:auto}.top{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:24px}.top h1{margin:0;font:700 30px "Playfair Display"}.muted{color:#777;font-size:13px}
+.btn{border:0;border-radius:9px;padding:11px 16px;background:#171717;color:#fff;font-weight:700;cursor:pointer}.btn.light{background:#fff;color:#171717;border:1px solid #ddd}.btn.gold{background:#c5a25b}.btn.danger{color:#a22;background:#fff;border:1px solid #e3caca}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}.card{background:#fff;border:1px solid #e7e3dc;border-radius:14px;padding:18px}.card b{font-size:24px;display:block;margin-top:7px}
+.section{display:none}.section.active{display:block}.toolbar{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:14px;flex-wrap:wrap}.search{padding:11px 13px;border:1px solid #ddd;border-radius:9px;background:#fff;min-width:240px}
+.tablewrap{background:#fff;border:1px solid #e7e3dc;border-radius:14px;overflow:auto}.table{width:100%;border-collapse:collapse;min-width:760px}.table th,.table td{padding:13px 14px;border-bottom:1px solid #eee;text-align:left;font-size:13px}.table th{font-size:12px;color:#777;text-transform:uppercase}
+.prod{display:flex;align-items:center;gap:10px}.prod img{width:48px;height:55px;object-fit:cover;border-radius:8px;background:#eee}.pill{display:inline-block;padding:5px 9px;border-radius:99px;background:#f1eee8;font-size:11px;font-weight:700}.actions button{margin-right:5px}
+.modal{position:fixed;inset:0;background:#0008;display:none;align-items:center;justify-content:center;padding:18px;z-index:5}.modal.show{display:flex}.modalbox{background:#fff;border-radius:16px;width:min(760px,100%);max-height:92vh;overflow:auto;padding:22px}.modalhead{display:flex;justify-content:space-between;align-items:center;gap:10px}.modalhead h2{margin:0;font:700 23px "Playfair Display"}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{margin:8px 0}.field label{display:block;font-size:12px;font-weight:700;margin-bottom:6px}.field input,.field textarea,.field select{width:100%;padding:11px;border:1px solid #ddd;border-radius:8px;background:#fff}.field textarea{min-height:90px;resize:vertical}.full{grid-column:1/-1}
+.uploadbox{border:1.5px dashed #c9c3b8;border-radius:12px;padding:16px;background:#fbfaf7}.uploadrow{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.uploadhint{font-size:12px;color:#777;margin-top:8px}.previewwrap{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}.previewitem{position:relative}.preview{width:90px;height:100px;object-fit:cover;border-radius:9px;border:1px solid #ddd;background:#eee}.removeimg{position:absolute;right:-6px;top:-6px;width:23px;height:23px;border:0;border-radius:50%;background:#171717;color:#fff;cursor:pointer}
+.notice{padding:12px 14px;background:#fff8e8;border:1px solid #ead7a5;border-radius:10px;color:#6f5720;font-size:12px;margin-bottom:15px}.success{padding:10px 12px;background:#edf8ef;border:1px solid #cbe8cf;border-radius:9px;color:#276235;font-size:12px;display:none}
+.formnote{font-size:12px;color:#777;line-height:1.5;margin-top:5px}.modalactions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px;border-top:1px solid #eee;padding-top:15px}
+.empty{padding:25px;text-align:center;color:#777}
+@media(max-width:800px){
+.layout{display:block}.side{height:auto;position:static;padding:10px 12px}.brand{padding:8px 8px 12px}.nav{display:flex;overflow:auto;gap:5px}.nav button{white-space:nowrap;width:auto}.main{padding:16px}.cards{grid-template-columns:1fr 1fr}.top h1{font-size:24px}.grid{grid-template-columns:1fr}.full{grid-column:auto}.search{min-width:0;width:100%}.modalbox{padding:17px}.top .btn{display:none}
+}
+</style>
+</head>
+<body>
+<div class="layout">
+<aside class="side">
+  <div class="brand">SHOP<span>NEX</span></div>
+  <div class="nav">
+    <button class="active" data-tab="dashboard">Dashboard</button>
+    <button data-tab="products">Products</button>
+    <button data-tab="orders">Orders</button>
+    <button data-tab="settings">Store Settings</button>
+    <button onclick="logout()">Logout</button>
+  </div>
+</aside>
+
+<main class="main">
+  <div class="top">
+    <div><h1 id="title">Dashboard</h1><div class="muted">Private SHOPNEX management area</div></div>
+    <button class="btn gold" onclick="openProduct()">+ Add Product</button>
+  </div>
+
+  <section id="dashboard" class="section active">
+    <div class="cards">
+      <div class="card">Products<b id="statProducts">0</b><span class="muted">in catalog</span></div>
+      <div class="card">Orders<b id="statOrders">0</b><span class="muted">orders</span></div>
+      <div class="card">Low stock<b id="statLow">0</b><span class="muted">items to review</span></div>
+      <div class="card">Store status<b>READY</b><span class="muted">customer view</span></div>
+    </div>
+    <div class="card">
+      <h3>Easy product management</h3>
+      <p class="muted">Add a product, choose its photo directly from your phone/gallery, set price and stock, then save. No image URLs are required.</p>
+      <button class="btn" onclick="openProduct()">+ Add Product</button>
+    </div>
+  </section>
+
+  <section id="products" class="section">
+    <div class="toolbar">
+      <input class="search" id="productSearch" placeholder="Search products..." oninput="renderProducts()">
+      <button class="btn" onclick="openProduct()">+ Add Product</button>
+    </div>
+    <div class="tablewrap"><table class="table">
+      <thead><tr><th>Product</th><th>Category</th><th>Price</th><th>Stock</th><th>Tag</th><th>Actions</th></tr></thead>
+      <tbody id="productRows"></tbody>
+    </table></div>
+  </section>
+
+  <section id="orders" class="section">
+    <div class="tablewrap"><table class="table">
+      <thead><tr><th>Order</th><th>Customer</th><th>Total</th><th>Payment</th><th>Status</th></tr></thead>
+      <tbody id="orderRows"><tr><td colspan="5" class="empty">No orders yet.</td></tr></tbody>
+    </table></div>
+  </section>
+
+  <section id="settings" class="section">
+    <div class="notice">Store settings are saved on this device in this demo version. The final live store will need online hosting/database connection for changes to sync everywhere.</div>
+    <div class="card">
+      <h3>Store Settings</h3>
+      <div class="grid">
+        <div class="field"><label>Store name</label><input id="storeName" value="SHOPNEX"></div>
+        <div class="field"><label>Tagline</label><input id="tagline" value="Everything you want. One place."></div>
+        <div class="field"><label>WhatsApp number</label><input id="whatsapp" placeholder="e.g. 923001234567"></div>
+        <div class="field"><label>Delivery charge (PKR)</label><input id="delivery" type="number" value="200"></div>
+        <div class="field full"><label>Homepage announcement</label><textarea id="announcement">Free delivery on orders over Rs. 3,000 • Cash on Delivery available</textarea></div>
+      </div>
+      <button class="btn" onclick="saveSettings()">Save Settings</button>
+      <p id="saved" class="muted"></p>
+    </div>
+  </section>
+</main>
+</div>
+
+<div class="modal" id="modal">
+  <div class="modalbox">
+    <div class="modalhead">
+      <div><h2 id="modalTitle">Add Product</h2><div class="muted">Fill the simple details below</div></div>
+      <button class="btn light" onclick="closeModal()">Close</button>
+    </div>
+
+    <form id="productForm" onsubmit="saveProduct(event)">
+      <input type="hidden" id="pid">
+      <div class="grid">
+        <div class="field"><label>Product name *</label><input id="pname" placeholder="e.g. Premium Leather Wallet" required></div>
+        <div class="field"><label>Category *</label>
+          <select id="pcat">
+            <option>Men</option><option>Women</option><option>Kids</option><option>Shoes</option><option>Perfumes</option><option>Clothing</option><option>Wallets</option><option>Watches</option><option>Accessories</option><option>Home</option>
+          </select>
+        </div>
+        <div class="field"><label>Price (PKR) *</label><input id="pprice" type="number" min="0" placeholder="3499" required></div>
+        <div class="field"><label>Sale price (optional)</label><input id="psale" type="number" min="0" placeholder="2999"></div>
+        <div class="field"><label>Stock quantity *</label><input id="pstock" type="number" min="0" required value="10"></div>
+        <div class="field"><label>Product label</label>
+          <select id="ptag"><option>New In</option><option>Trending</option><option>Best Seller</option><option>Exclusive</option><option>None</option></select>
+        </div>
+
+        <div class="field full">
+          <label>Product photos</label>
+          <div class="uploadbox">
+            <div class="uploadrow">
+              <button type="button" class="btn light" onclick="document.getElementById('pfiles').click()">📷 Choose from Gallery</button>
+              <input id="pfiles" type="file" accept="image/*" multiple hidden>
+              <button type="button" class="btn light" onclick="clearImages()">Remove photos</button>
+            </div>
+            <div class="uploadhint">Select one or more photos from your phone/computer. The first photo becomes the main product photo.</div>
+            <div id="previewwrap" class="previewwrap"></div>
+            <div id="imageStatus" class="formnote"></div>
+          </div>
+        </div>
+
+        <div class="field full">
+          <label>Description</label>
+          <textarea id="pdesc" placeholder="Short description of the product..."></textarea>
+        </div>
+      </div>
+
+      <div class="modalactions">
+        <button type="button" class="btn light" onclick="closeModal()">Cancel</button>
+        <button class="btn gold" type="submit">Save Product</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+if(sessionStorage.getItem("shopnexAdmin")!=="1")location.replace("admin-login.html");
+
+let products=JSON.parse(localStorage.getItem("shopnexProducts")||"[]");
+let selectedImages=[];
+
+function save(){
+  localStorage.setItem("shopnexProducts",JSON.stringify(products));
+  updateStats();
+  renderProducts();
+}
+function updateStats(){
+  document.getElementById("statProducts").textContent=products.length;
+  document.getElementById("statOrders").textContent=localStorage.getItem("shopnex_orders_count")||0;
+  document.getElementById("statLow").textContent=products.filter(p=>Number(p.stock)<=5).length;
+}
+function renderProducts(){
+  let q=(document.getElementById("productSearch")?.value||"").toLowerCase();
+  let rows=products.filter(p=>(p.name+" "+p.category+" "+p.tag).toLowerCase().includes(q));
+  document.getElementById("productRows").innerHTML=rows.map(p=>`
+    <tr>
+      <td><div class="prod"><img src="${safeAttr(p.image||"")}" onerror="this.src='data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27100%27 height=%27100%27%3E%3Crect width=%27100%27 height=%27100%27 fill=%27%23eee%27/%3E%3C/svg%3E'">
+      <div><b>${esc(p.name)}</b><div class="muted">${esc(p.desc||"")}</div></div></div></td>
+      <td>${esc(p.category)}</td><td>PKR ${Number(p.price).toLocaleString()}</td><td>${p.stock}</td>
+      <td><span class="pill">${esc(p.tag||"None")}</span></td>
+      <td class="actions"><button class="btn light" onclick="editProduct('${safeAttr(p.id)}')">Edit</button><button class="btn danger" onclick="deleteProduct('${safeAttr(p.id)}')">Delete</button></td>
+    </tr>`).join("")||"<tr><td colspan='6' class='empty'>No products found.</td></tr>";
+}
+
+function openProduct(id){
+  document.getElementById("modal").classList.add("show");
+  document.getElementById("modalTitle").textContent=id?"Edit Product":"Add Product";
+  document.getElementById("productForm").reset();
+  document.getElementById("pid").value="";
+  selectedImages=[];
+  document.getElementById("previewwrap").innerHTML="";
+  document.getElementById("imageStatus").textContent="";
+  if(id){
+    let p=products.find(x=>x.id===id);
+    if(!p)return;
+    for(const [el,val] of [["pid",p.id],["pname",p.name],["pcat",p.category],["pprice",p.price],["psale",p.sale||""],["pstock",p.stock],["ptag",p.tag||"None"],["pdesc",p.desc||""]])document.getElementById(el).value=val;
+    selectedImages=(p.images&&p.images.length?p.images:[p.image]).filter(Boolean);
+    renderPreviews();
+  } else {
+    document.getElementById("pstock").value=10;
+    document.getElementById("ptag").value="New In";
+  }
+}
+
+function editProduct(id){openProduct(id)}
+function closeModal(){document.getElementById("modal").classList.remove("show")}
+function clearImages(){selectedImages=[];renderPreviews()}
+function renderPreviews(){
+  const wrap=document.getElementById("previewwrap");
+  wrap.innerHTML="";
+  selectedImages.forEach((src,i)=>{
+    const d=document.createElement("div");d.className="previewitem";
+    const img=document.createElement("img");img.className="preview";img.src=src;
+    const b=document.createElement("button");b.type="button";b.className="removeimg";b.textContent="×";b.onclick=()=>{selectedImages.splice(i,1);renderPreviews()};
+    d.appendChild(img);d.appendChild(b);wrap.appendChild(d);
+  });
+  document.getElementById("imageStatus").textContent=selectedImages.length?selectedImages.length+" photo"+(selectedImages.length>1?"s":"")+" selected.":"No photo selected yet.";
+}
+
+function compressImage(file){
+  return new Promise((resolve,reject)=>{
+    const reader=new FileReader();
+    reader.onload=()=>{
+      const img=new Image();
+      img.onload=()=>{
+        const max=1200;
+        let w=img.width,h=img.height;
+        if(w>max||h>max){const r=Math.min(max/w,max/h);w=Math.round(w*r);h=Math.round(h*r)}
+        const c=document.createElement("canvas");c.width=w;c.height=h;
+        c.getContext("2d").drawImage(img,0,0,w,h);
+        resolve(c.toDataURL("image/jpeg",0.82));
+      };
+      img.onerror=reject;img.src=reader.result;
+    };
+    reader.onerror=reject;reader.readAsDataURL(file);
+  });
+}
+
+document.getElementById("pfiles").addEventListener("change",async e=>{
+  const files=[...e.target.files].filter(f=>f.type.startsWith("image/"));
+  if(!files.length)return;
+  document.getElementById("imageStatus").textContent="Preparing photos...";
+  try{
+    const newImages=[];
+    for(const f of files){newImages.push(await compressImage(f))}
+    selectedImages=selectedImages.concat(newImages).slice(0,6);
+    renderPreviews();
+  }catch(err){document.getElementById("imageStatus").textContent="Could not read one of the photos. Please try another image."}
+  e.target.value="";
+});
+
+async function saveProduct(e){
+  e.preventDefault();
+  if(!selectedImages.length){alert("Please choose at least one product photo from Gallery.");return}
+  let id=document.getElementById("pid").value||Date.now().toString();
+  let obj={
+    id,
+    name:v("pname"),
+    category:v("pcat"),
+    price:Number(v("pprice")),
+    sale:Number(v("psale"))||0,
+    stock:Number(v("pstock")),
+    tag:v("ptag"),
+    image:selectedImages[0],
+    images:selectedImages.slice(0,6),
+    desc:v("pdesc")
+  };
+  let i=products.findIndex(p=>p.id===id);
+  if(i>=0)products[i]=obj;else products.unshift(obj);
+  try{
+    save();
+    closeModal();
+    showTab("products");
+  }catch(err){
+    alert("Photo storage is full. Try fewer/smaller photos.");
+  }
+}
+function deleteProduct(id){if(confirm("Delete this product?")){products=products.filter(p=>p.id!==id);save()}}
+function v(id){return document.getElementById(id).value}
+function showTab(id){
+  document.querySelectorAll(".section").forEach(x=>x.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  document.querySelectorAll(".nav button").forEach(x=>x.classList.toggle("active",x.dataset.tab===id));
+  document.getElementById("title").textContent=id==="dashboard"?"Dashboard":id==="products"?"Products":id==="orders"?"Orders":"Store Settings";
+  if(id==="products")renderProducts();
+}
+document.querySelectorAll(".nav button[data-tab]").forEach(b=>b.onclick=()=>showTab(b.dataset.tab));
+function logout(){sessionStorage.removeItem("shopnexAdmin");location.href="admin-login.html"}
+function saveSettings(){
+  localStorage.setItem("shopnex_settings",JSON.stringify({
+    name:v("storeName"),tagline:v("tagline"),whatsapp:v("whatsapp"),delivery:v("delivery"),announcement:v("announcement")
+  }));
+  document.getElementById("saved").textContent="Saved on this device.";
+  setTimeout(()=>document.getElementById("saved").textContent="",1800)
+}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]))}
+function safeAttr(s){return esc(s).replace(/`/g,"&#96;")}
+updateStats();renderProducts();
+</script>
+</body>
+</html>
